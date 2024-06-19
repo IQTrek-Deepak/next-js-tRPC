@@ -3,6 +3,7 @@ import { procedure, router } from "./trpc";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 const connectionString = process.env.DATABASE_URL ?? "";
 const client = postgres(connectionString, { prepare: false });
@@ -37,6 +38,19 @@ export const appRouter = router({
       return await db
         .insert(users)
         .values({ fullName: opts.input.name, phone: opts.input.phone });
+    }),
+  changePhone: procedure
+    .input(
+      z.object({
+        id: z.number(),
+        phone: z.string(),
+      }),
+    )
+    .mutation(async (opts) => {
+      return await db
+        .update(users)
+        .set({ phone: opts.input.phone })
+        .where(eq(users.id, opts.input.id));
     }),
 });
 

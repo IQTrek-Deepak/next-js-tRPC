@@ -9,6 +9,7 @@ export default function ToDoList() {
   const hello = trpc.hello.useQuery({ text: "Deepak" });
   const allUsers = trpc.allUsers.useQuery();
   const addUser = trpc.addUser.useMutation();
+  const changePhone = trpc.changePhone.useMutation();
   return (
     <div>
       {JSON.stringify(getTodos.data)}
@@ -17,7 +18,13 @@ export default function ToDoList() {
       <ul>
         {allUsers.data?.map((user) => {
           return (
-            <li key={user.id}>
+            <li
+              key={user.id}
+              className="p-4 m-4 cursor-pointer"
+              onClick={() =>
+                changePhone.mutate({ id: user.id, phone: "0000000000000" })
+              }
+            >
               {user.fullName} "-" {user.phone}
             </li>
           );
