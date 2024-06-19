@@ -26,6 +26,18 @@ export const appRouter = router({
     const allUsers = await db.select().from(users);
     return allUsers;
   }),
+  addUser: procedure
+    .input(
+      z.object({
+        name: z.string(),
+        phone: z.string(),
+      }),
+    )
+    .mutation(async (opts) => {
+      return await db
+        .insert(users)
+        .values({ fullName: opts.input.name, phone: opts.input.phone });
+    }),
 });
 
 // export type definition of API
